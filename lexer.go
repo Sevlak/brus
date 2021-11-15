@@ -2,21 +2,22 @@ package main
 
 import (
 	"bufio"
-	"io"
-	"unicode"
+	"flag"
 	"fmt"
+	"io"
 	"os"
+	"unicode"
 )
 
 type Token int
 
 type Position struct {
-	line 	int
-	column 	int
+	line   int
+	column int
 }
 
 type Lexer struct {
-	pos Position
+	pos    Position
 	reader *bufio.Reader
 }
 
@@ -30,13 +31,13 @@ const (
 	SEPARATOR
 )
 
-var tokens = []string {
-	EOF:			"EOF",
-	ILLEGAL:		"ILLEGAL",
-	IDENT:			"IDENT",
-	INT: 			"INT",
-	OPERATOR:		"OPERATOR",
-	SEPARATOR: 		"SEPARATOR",
+var tokens = []string{
+	EOF:       "EOF",
+	ILLEGAL:   "ILLEGAL",
+	IDENT:     "IDENT",
+	INT:       "INT",
+	OPERATOR:  "OPERATOR",
+	SEPARATOR: "SEPARATOR",
 }
 
 func (t Token) String() string {
@@ -45,7 +46,7 @@ func (t Token) String() string {
 
 func NewLexer(reader io.Reader) *Lexer {
 	return &Lexer{
-		pos: Position{line: 1, column: 0},
+		pos:    Position{line: 1, column: 0},
 		reader: bufio.NewReader(reader),
 	}
 }
@@ -141,8 +142,8 @@ func (l *Lexer) lexIdent() string {
 				return lit
 			}
 		}
-			
-        l.pos.column++
+
+		l.pos.column++
 		if unicode.IsLetter(r) {
 			lit = lit + string(r)
 		} else {
@@ -153,7 +154,9 @@ func (l *Lexer) lexIdent() string {
 }
 
 func main() {
-	file, err := os.Open("FILE_NAME_HERE")
+	filename := flag.String("f", "/dev/stdin", "File to parse")
+	flag.Parse()
+	file, err := os.Open(*filename)
 	if err != nil {
 		panic(err)
 	}
