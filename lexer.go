@@ -160,6 +160,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer file.Close()
 
 	lexer := NewLexer(file)
 	for {
